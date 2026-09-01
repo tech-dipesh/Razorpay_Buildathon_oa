@@ -1,0 +1,172 @@
+enum LoanStatus {
+  REQUESTED
+  ACTIVE
+  OVERDUE
+  REPAID
+  DEFAULTED
+}
+
+enum RepaymentType {
+  LUMP_SUM
+  INSTALLMENTS
+}
+
+enum CompoundingFrequency {
+  MONTHLY
+  QUARTERLY
+  ANNUALLY
+}
+
+enum AmendmentStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum RepaymentStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+enum DocumentType {
+  PROMISSORY_NOTE
+  DEMAND_NOTICE
+}
+
+enum DisputeStatus {
+  OPEN
+  RESOLVED
+}
+
+enum DisputeTrigger {
+  MANUAL
+  AUTOMATIC
+}
+
+enum NotificationType {
+  REMINDER
+  ESCALATION
+}
+
+model User {
+  id                String          @id @default(uuid())
+  name              String
+  email             String          @unique
+  phone             String          @unique
+  passwordHash      String
+  maskedIdNumber    String?
+  emailVerifiedAt   DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  loansAsLender     Loan[]          @relation("LenderLoans")
+  loansAsBorrower   Loan[]          @relation("BorrowerLoans")
+  refreshTokens     RefreshToken[]
+  amendmentsProposed LoanAmendment[]
+  disputesRaised    Dispute[]
+}
+
+model RefreshToken {
+  id         String    @id @default(uuid())
+  userId     String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+
+  user       User      @relation(fields: [userId], references: [id])
+}
+
+model Loan {
+  id                   String                @id @default(uuid())
+  lenderId             String
+  borrowerId           String
+  principalAmount      Decimal               @db.Decimal(12, 2)
+  interestRate         Decimal               @db.Decimal(5, 2)
+  compoundingFrequency CompoundingFrequency
+  repaymentType        RepaymentType
+  tenureMonths         Int
+  dueDate              DateTime
+  status               LoanStatus            @default(REQUESTED)
+  lockedAt             DateTime?
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+
+  lender               User                  @relation("LenderLoans", fields: [lenderId], references: [id])
+  borrower             User                  @relation("BorrowerLoans", fields: [borrowerId], references: [id])
+  amendments           LoanAmendment[]
+  repayments           Repayment[]
+  documents            Document[]
+  disputes             Dispute[]
+  notifications        Notification[]
+}
+
+model LoanAmendment {
+  id                   String               @id @default(uuid())
+  loanId               String
+  proposedByUserId     String
+  version              Int
+  principalAmount      Decimal              @db.Decimal(12, 2)
+  interestRate         Decimal              @db.Decimal(5, 2)
+  compoundingFrequency CompoundingFrequency
+  tenureMonths         Int
+  dueDate              DateTime
+  status               AmendmentStatus      @default(PENDING)
+  createdAt            DateTime             @default(now())
+  respondedAt          DateTime?
+
+  loan                 Loan                 @relation(fields: [loanId], references: [id])
+  proposedBy           User                 @relation(fields: [proposedByUserId], references: [id])
+  documents            Document[]
+}
+
+model Repayment {
+  id                String          @id @default(uuid())
+  loanId            String
+  amount            Decimal         @db.Decimal(12, 2)
+  razorpayOrderId   String          @unique
+  razorpayPaymentId String?         @unique
+  status            RepaymentStatus @default(PENDING)
+  createdAt         DateTime        @default(now())
+  confirmedAt       DateTime?
+
+  loan              Loan            @relation(fields: [loanId], references: [id])
+}
+
+model Document {
+  id          String         @id @default(uuid())
+  loanId      String
+  amendmentId String?
+  type        DocumentType
+  content     String
+  aiProvider  String
+  createdAt   DateTime       @default(now())
+
+  loan        Loan           @relation(fields: [loanId], references: [id])
+  amendment   LoanAmendment? @relation(fields: [amendmentId], references: [id])
+}
+
+model Dispute {
+  id             String         @id @default(uuid())
+  loanId         String
+  raisedByUserId String?
+  trigger        DisputeTrigger
+  reason         String
+  status         DisputeStatus  @default(OPEN)
+  createdAt      DateTime       @default(now())
+  resolvedAt     DateTime?
+
+  loan           Loan           @relation(fields: [loanId], references: [id])
+  raisedBy       User?          @relation(fields: [raisedByUserId], references: [id])
+}
+
+model Notification {
+  id      String           @id @default(uuid())
+  loanId  String
+  type    NotificationType
+  channel String
+  sentAt  DateTime         @default(now())
+
+  loan    Loan             @relation(fields: [loanId], references: [id])
+}
