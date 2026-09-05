@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0f172a;
+  --color-surface: #314158;
+  --color-surface-raised: #3d5069;
+  --color-surface-sunken: #22303f;
+  --color-accent: #22d3ee;
+  --color-accent-strong: #0891b2;
+  --color-accent-wash: rgba(34, 211, 238, 0.08);
+  --color-accent-ink: #083344;
+  --color-ink: #f1f5f9;
+  --color-ink-soft: #aebccd;
+  --color-ink-faint: #71879e;
+  --color-border: rgba(148, 168, 191, 0.18);
+  --color-border-strong: rgba(148, 168, 191, 0.32);
+  --color-danger: #e8998c;
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-plex-sans), system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+.tabular-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.ledger-rules {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 43px,
+    var(--color-border) 43px,
+    var(--color-border) 44px
+  );
+}
