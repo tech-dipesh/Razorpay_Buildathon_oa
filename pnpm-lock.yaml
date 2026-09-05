@@ -392,6 +392,9 @@ importers:
       '@repo/config':
         specifier: workspace:*
         version: link:../config
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
       prisma:
         specifier: 'catalog:'
         version: 7.10.0(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@6.0.3)
