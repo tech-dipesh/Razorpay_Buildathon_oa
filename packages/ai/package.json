@@ -1,0 +1,26 @@
+{
+  "name": "@repo/ai",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint .",
+    "type": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ai": "catalog:",
+    "@ai-sdk/anthropic": "catalog:",
+    "@ai-sdk/openai": "catalog:",
+    "@ai-sdk/google": "catalog:",
+    "@ai-sdk/xai": "catalog:",
+    "@ai-sdk/openai-compatible": "catalog:",
+    "zod": "catalog:",
+    "@repo/redis": "workspace:*"
+  },
+  "devDependencies": {
+    "@repo/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
