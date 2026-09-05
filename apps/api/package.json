@@ -1,0 +1,46 @@
+{
+  "name": "@repo/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./router": "./src/router.ts"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsup src/server.ts --format esm --target node22 --out-dir dist",
+    "start": "node dist/server.js",
+    "lint": "eslint .",
+    "type": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "fastify": "catalog:",
+    "fastify-type-provider-zod": "catalog:",
+    "zod": "catalog:",
+    "@repo/shared": "workspace:*",
+    "@repo/database": "workspace:*",
+    "@repo/redis": "workspace:*",
+    "@repo/config": "workspace:*",
+    "pdf-lib": "catalog:",
+    "prom-client": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/openapi": "catalog:",
+    "@orpc/zod": "catalog:",
+    "argon2": "catalog:",
+    "jose": "catalog:",
+    "@fastify/cookie": "catalog:",
+    "@repo/mail": "workspace:*",
+    "razorpay": "catalog:",
+    "@fastify/rate-limit": "catalog:",
+    "@fastify/cors": "catalog:",
+    "@repo/queue": "workspace:*",
+    "@repo/ai": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "tsx": "^4.19.0",
+    "tsup": "^8.3.0",
+    "vitest": "catalog:"
+  }
+}
