@@ -2,10 +2,10 @@
   "extends": "@repo/config/tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@generated/client": ["./generated/client/client.ts"]  
     },
     "outDir": "./dist",
-    "rootDir": "./src"
   },
-  "include": ["src"]
+  "include": ["src", "prisma"]
 }

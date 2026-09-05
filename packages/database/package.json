@@ -6,21 +6,23 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "generate": "prisma generate",
-    "migrate": "prisma migrate dev",
-    "seed": "tsx prisma/seed.ts",
+    "generate": "tsx --env-file=../../.env node_modules/.bin/prisma generate",
+    "migrate": "tsx --env-file=../../.env node_modules/.bin/prisma migrate dev",
+    "seed": "bun --env-file=../../.env prisma/seed.ts",
+    "reset": "prisma migrate reset",
     "type": "tsc --noEmit"
   },
   "dependencies": {
-    "@prisma/client": "catalog:",
     "@prisma/adapter-pg": "catalog:",
+    "@prisma/client": "catalog:",
     "argon2": "catalog:",
     "pg": "^8.13.0"
   },
   "devDependencies": {
     "@repo/config": "workspace:*",
+    "dotenv": "^17.4.2",
     "prisma": "catalog:",
-    "typescript": "catalog:",
-    "tsx": "^4.19.0"
+    "tsx": "^4.19.0",
+    "typescript": "catalog:"
   }
 }
