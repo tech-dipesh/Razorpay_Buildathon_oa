@@ -1,8 +1,10 @@
 {
+  "name": "vaada",
+  "private": true,
   "engines": {
     "node": ">=24.0.0"
   },
-  "packageManager": "pnpm@11.25.0",
+  "packageManager": "pnpm@11.24.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -11,7 +13,6 @@
     "type": "turbo run type",
     "generate": "turbo run generate",
     "seed": "turbo run seed",
-    "reset": "turbo run reset",
     "clean": "turbo run clean"
   },
   "devDependencies": {
