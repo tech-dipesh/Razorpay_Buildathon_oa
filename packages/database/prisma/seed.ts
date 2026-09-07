@@ -1,4 +1,3 @@
-import "dotenv/config"
 import { randomUUID } from "node:crypto"
 import { argon2id, hash } from "argon2"
 import { PrismaPg } from "@prisma/adapter-pg"
@@ -203,8 +202,51 @@ async function generateBatchReport(createdLoans: SeededLoan[]): Promise<void> {
   )
 }
 
+async function clearExistingSeedData(): Promise<void> {
+  const seedUsers = await database.user.findMany({
+    where: { email: { endsWith: "@seed.vaada.test" } },
+    select: { id: true }
+  })
+
+  const seedUserIds = seedUsers.map((user) => user.id)
+
+  if (seedUserIds.length === 0) {
+    return
+  }
+
+  const seedLoans = await database.loan.findMany({
+    where: {
+      OR: [
+        { lenderId: { in: seedUserIds } },
+        { borrowerId: { in: seedUserIds } }
+      ]
+    },
+    select: { id: true }
+  })
+
+  const seedLoanIds = seedLoans.map((loan) => loan.id)
+
+  await database.escalationState.deleteMany({
+    where: { loanId: { in: seedLoanIds } }
+  })
+  await database.repayment.deleteMany({
+    where: { loanId: { in: seedLoanIds } }
+  })
+  await database.loan.deleteMany({
+    where: { id: { in: seedLoanIds } }
+  })
+  await database.user.deleteMany({
+    where: { id: { in: seedUserIds } }
+  })
+  await database.batchReport.deleteMany({})
+
+  console.log(`cleared ${seedLoanIds.length} loan(s) and ${seedUserIds.length} user(s) from a previous seed run`)
+}
+
 async function main(): Promise<void> {
   console.log("seeding vaada demo data...")
+
+  await clearExistingSeedData()
 
   const { lenders, borrowers } = await createSeedUsers()
   const createdLoans = await createSeedLoans(lenders, borrowers)
